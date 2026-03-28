@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feliz Aniversário, Stefany! 🎂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0C0A09;
+    --bg2: #1A1614;
+    --warm: #FF6B35;
+    --warm2: #FF8F5E;
+    --gold: #E8B931;
+    --gold-dim: rgba(232,185,49,0.15);
+    --cream: #FAF3E8;
+    --cream-dim: rgba(250,243,232,0.7);
+    --cream-muted: rgba(250,243,232,0.4);
+    --olive: #8A9A5B;
+    --olive-bg: rgba(138,154,91,0.08);
+    --olive-border: rgba(138,154,91,0.3);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* ══════════ ANIMS ══════════ */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes scaleIn { from { opacity:0; transform:scale(0.85); } to { opacity:1; transform:scale(1); } }
+  @keyframes glow {
+    0%,100% { text-shadow: 0 0 20px rgba(255,107,53,0.3), 0 0 60px rgba(255,107,53,0.1); }
+    50% { text-shadow: 0 0 40px rgba(255,107,53,0.5), 0 0 100px rgba(255,107,53,0.2); }
+  }
+  @keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  @keyframes bounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+  @keyframes pulse { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(1.3); opacity:0.7; } }
+  @keyframes revealLine { from { width:0; } to { width:100%; } }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
+  @keyframes breathe { 0%,100% { opacity:0.15; } 50% { opacity:0.35; } }
+  @keyframes growUp { from { transform:scaleY(0); } to { transform:scaleY(1); } }
+  @keyframes typeIn {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  /* ══════════ PARTICLES ══════════ */
+  #particles {
+    position:fixed; top:0; left:0;
+    width:100%; height:100%;
+    pointer-events:none; z-index:0;
+  }
+
+  /* ══════════ MARQUEE ══════════ */
+  .marquee-banner {
+    overflow:hidden; background:var(--warm);
+    padding:10px 0; white-space:nowrap;
+    position:relative; z-index:10;
+  }
+  .marquee-track {
+    display:inline-flex;
+    animation:marquee 20s linear infinite;
+  }
+  .marquee-track span {
+    font-family:'Space Mono',monospace;
+    font-size:12px; font-weight:700;
+    letter-spacing:3px; text-transform:uppercase;
+    color:var(--bg); padding:0 32px;
+  }
+  .marquee-track span em { font-style:normal; opacity:0.4; margin:0 24px; }
+
+  /* ══════════ CAROUSEL HERO ══════════ */
+  .carousel-hero {
+    position:relative; width:100%;
+    height:92vh; min-height:560px;
+    overflow:hidden;
+    background:var(--bg);
+  }
+  .carousel-track {
+    display:flex; height:100%;
+    transition:transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    will-change:transform;
+  }
+  .carousel-slide { min-width:100%; height:100%; position:relative; }
+  .carousel-slide img {
+    display:block; width:100%; height:100%;
+    object-fit:contain;
+    filter:brightness(0.65) contrast(1.05);
+    transition:filter 0.7s ease;
+  }
+  .carousel-slide.active img { filter:brightness(0.6) contrast(1.05); }
+
+  .carousel-slide .caption {
+    position:absolute; bottom:100px; left:0; right:0;
+    text-align:center; padding:0 32px;
+    opacity:0; transform:translateY(20px);
+    transition:all 0.6s ease 0.3s;
+  }
+  .carousel-slide.active .caption { opacity:1; transform:translateY(0); }
+  .caption-text {
+    font-family:'Space Mono',monospace;
+    font-size:14px; color:var(--cream-dim);
+    letter-spacing:1px; display:inline-block;
+    padding:8px 20px;
+    border:1px solid rgba(250,243,232,0.15);
+    border-radius:4px;
+    backdrop-filter:blur(8px);
+    background:rgba(12,10,9,0.3);
+  }
+
+  .carousel-overlay {
+    position:absolute; top:0; left:0; right:0; bottom:0;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    z-index:5; pointer-events:none; padding:24px;
+  }
+  .hero-tag {
+    font-family:'Space Mono',monospace;
+    font-size:11px; letter-spacing:6px;
+    text-transform:uppercase; color:var(--gold);
+    opacity:0; animation:fadeUp 0.8s ease 0.5s forwards;
+    margin-bottom:16px;
+  }
+  .hero-name {
+    font-size:clamp(56px,14vw,130px);
+    font-weight:800; line-height:0.9;
+    letter-spacing:-3px; color:var(--cream);
+    opacity:0;
+    animation:scaleIn 1s cubic-bezier(0.16,1,0.3,1) 0.8s forwards, glow 4s ease 2s infinite;
+    text-align:center;
+  }
+  .hero-line {
+    width:60px; height:2px; background:var(--warm);
+    margin:20px 0; opacity:0;
+    animation:fadeIn 0.5s ease 1.3s forwards;
+    position:relative;
+  }
+  .hero-line::after {
+    content:''; position:absolute;
+    width:0; height:100%;
+    background:var(--gold); top:0; left:0;
+    animation:revealLine 1s ease 1.6s forwards;
+  }
+  .hero-year {
+    font-family:'Space Mono',monospace;
+    font-size:14px; color:var(--cream-muted);
+    letter-spacing:3px; opacity:0;
+    animation:fadeUp 0.6s ease 1.5s forwards;
+  }
+
+  .carousel-nav {
+    position:absolute; bottom:32px; left:50%;
+    transform:translateX(-50%);
+    display:flex; align-items:center; gap:16px;
+    z-index:10;
+  }
+  .carousel-nav button {
+    width:40px; height:40px; border-radius:50%;
+    border:1px solid rgba(250,243,232,0.2);
+    background:rgba(12,10,9,0.5);
+    backdrop-filter:blur(10px);
+    color:var(--cream); font-size:18px;
+    cursor:pointer; transition:all 0.3s;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .carousel-nav button:hover {
+    background:var(--warm); border-color:var(--warm);
+    transform:scale(1.1);
+  }
+  .carousel-counter {
+    font-family:'Space Mono',monospace;
+    font-size:12px; color:var(--cream-muted);
+    letter-spacing:2px; min-width:50px; text-align:center;
+  }
+
+  .scroll-cue {
+    position:absolute; bottom:32px; right:32px;
+    z-index:10; display:flex; flex-direction:column;
+    align-items:center; gap:6px;
+    opacity:0; animation:fadeIn 0.5s ease 2.5s forwards;
+  }
+  .scroll-cue span {
+    font-family:'Space Mono',monospace;
+    font-size:9px; letter-spacing:3px;
+    text-transform:uppercase; color:var(--cream-muted);
+    writing-mode:vertical-rl;
+  }
+  .scroll-cue-line {
+    width:1px; height:40px;
+    background:linear-gradient(to bottom,var(--warm),transparent);
+    animation:bounce 2s ease infinite;
+  }
+
+  /* ══════════ MESSAGE ══════════ */
+  .message-section {
+    position:relative; padding:100px 24px 80px; z-index:1;
+  }
+  .message-section::before {
+    content:''; position:absolute;
+    top:0; left:0; right:0; height:200px;
+    background:linear-gradient(to bottom,rgba(12,10,9,0.8),transparent);
+    pointer-events:none;
+  }
+  .message-inner { max-width:600px; margin:0 auto; position:relative; }
+  .msg-deco {
+    font-size:120px; font-weight:800;
+    color:rgba(255,107,53,0.04);
+    position:absolute; top:-50px; left:-20px;
+    line-height:1; z-index:0; user-select:none;
+  }
+  .msg-label {
+    font-family:'Space Mono',monospace;
+    font-size:11px; letter-spacing:5px;
+    text-transform:uppercase; color:var(--warm);
+    margin-bottom:28px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .msg-label::after {
+    content:''; flex:1; height:1px;
+    background:linear-gradient(to right,var(--warm),transparent);
+  }
+  .msg-text {
+    font-size:18px; line-height:2;
+    color:var(--cream-dim); font-weight:400;
+    position:relative; z-index:1;
+  }
+  .msg-text p { margin-bottom:20px; }
+  .msg-text p:last-child { margin-bottom:0; }
+  .msg-text strong { color:var(--cream); font-weight:600; }
+  .msg-text .hl {
+    color:var(--warm2); font-weight:600; position:relative;
+  }
+  .msg-text .hl::after {
+    content:''; position:absolute;
+    bottom:-2px; left:0; width:100%; height:2px;
+    background:var(--warm); opacity:0.3; border-radius:2px;
+  }
+  .msg-sign {
+    margin-top:40px; text-align:right;
+    font-family:'Space Mono',monospace;
+    font-size:13px; letter-spacing:2px;
+    color:var(--cream-muted);
+  }
+  .msg-sign .heart {
+    display:inline-block; color:var(--warm);
+    animation:pulse 2s ease infinite; margin-left:6px;
+  }
+
+  /* parágrafos revelam em cascata quando a seção entra na tela */
+  .msg-text p {
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .message-inner.visible .msg-text p { opacity:1; transform:translateY(0); }
+  .message-inner.visible .msg-text p:nth-child(1)  { transition-delay:0.05s; }
+  .message-inner.visible .msg-text p:nth-child(2)  { transition-delay:0.18s; }
+  .message-inner.visible .msg-text p:nth-child(3)  { transition-delay:0.32s; }
+  .message-inner.visible .msg-text p:nth-child(4)  { transition-delay:0.46s; }
+  .message-inner.visible .msg-text p:nth-child(5)  { transition-delay:0.60s; }
+  .message-inner.visible .msg-text p:nth-child(6)  { transition-delay:0.74s; }
+  .message-inner.visible .msg-text p:nth-child(7)  { transition-delay:0.86s; }
+  .message-inner.visible .msg-text p:nth-child(8)  { transition-delay:0.97s; }
+  .message-inner.visible .msg-text p:nth-child(9)  { transition-delay:1.08s; }
+  .message-inner.visible .msg-text p:nth-child(10) { transition-delay:1.18s; }
+
+  .msg-verse {
+    display:block;
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic; font-size:17px;
+    color:var(--gold); opacity:0.85;
+    padding:10px 0 10px 16px;
+    border-left:2px solid rgba(232,185,49,0.25);
+    margin:12px 0;
+  }
+  .msg-funny { color:var(--cream-muted); font-size:16px; }
+  .msg-finale {
+    font-size:20px; font-weight:600;
+    color:var(--cream); padding-top:8px;
+  }
+  .msg-aside {
+    display:inline-block; font-size:13px;
+    color:var(--cream-muted); font-weight:400; opacity:0.7;
+  }
+  .hl-gold {
+    color:var(--gold); font-weight:700; position:relative;
+  }
+  .hl-gold::after {
+    content:''; position:absolute;
+    bottom:-2px; left:0; width:100%; height:2px;
+    background:var(--gold); opacity:0.3; border-radius:2px;
+  }
+
+  /* ══════════ RESILIENCE ══════════ */
+  .resilience-section {
+    position:relative;
+    padding:60px 24px 100px;
+    z-index:1;
+    overflow:hidden;
+  }
+
+  .resilience-bg {
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(ellipse 70% 60% at 20% 50%, rgba(232,185,49,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 70% at 80% 40%, rgba(255,107,53,0.03) 0%, transparent 60%);
+    pointer-events:none;
+  }
+
+  .resilience-inner {
+    max-width:580px;
+    margin:0 auto;
+    position:relative;
+  }
+
+  .resilience-line-vert {
+    position:absolute;
+    left:0; top:0;
+    width:2px;
+    height:100%;
+    transform-origin:top;
+    overflow:hidden;
+  }
+  .resilience-line-vert::after {
+    content:'';
+    display:block;
+    width:100%;
+    height:100%;
+    background:linear-gradient(to bottom, var(--gold), var(--warm), transparent);
+    opacity:0;
+    transition: opacity 1s ease;
+  }
+  .resilience-inner.visible .resilience-line-vert::after {
+    opacity:1;
+    animation:growUp 1.5s ease forwards;
+    transform-origin:top;
+  }
+
+  .resilience-content {
+    padding-left:32px;
+  }
+
+  .resilience-tag {
+    font-family:'Space Mono',monospace;
+    font-size:10px;
+    letter-spacing:5px;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:24px;
+    opacity:0.7;
+  }
+
+  .resilience-title {
+    font-size:clamp(28px,6vw,42px);
+    font-weight:800;
+    letter-spacing:-1px;
+    line-height:1.15;
+    margin-bottom:32px;
+    color:var(--cream);
+    position:relative;
+  }
+  .resilience-title .warm { color:var(--warm); }
+  .resilience-title .gold { color:var(--gold); }
+
+  .resilience-text {
+    font-size:17px;
+    line-height:2;
+    color:var(--cream-dim);
+    font-weight:400;
+  }
+  .resilience-text p { margin-bottom:20px; }
+  .resilience-text p:last-child { margin-bottom:0; }
+  .resilience-text strong {
+    color:var(--cream);
+    font-weight:600;
+  }
+  .resilience-text .hl {
+    color:var(--warm2);
+    font-weight:600;
+  }
+  .resilience-text .gold-hl {
+    color:var(--gold);
+    font-weight:500;
+  }
+
+  .resilience-emoji-row {
+    display:flex;
+    gap:16px;
+    margin-top:32px;
+    flex-wrap:wrap;
+  }
+  .resilience-emoji-item {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 16px;
+    border-radius:8px;
+    background:var(--bg2);
+    border:1px solid rgba(250,243,232,0.05);
+    transition:all 0.3s;
+  }
+  .resilience-emoji-item:hover {
+    border-color:rgba(232,185,49,0.2);
+    transform:translateY(-2px);
+  }
+  .resilience-emoji-item span:first-child { font-size:20px; }
+  .resilience-emoji-item span:last-child {
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    color:var(--cream-muted);
+    letter-spacing:1px;
+  }
+
+  /* ══════════ VERSE FINAL ══════════ */
+  .verse-final {
+    position:relative;
+    padding:80px 24px 100px;
+    z-index:1;
+    text-align:center;
+  }
+
+  .verse-final-inner {
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  .verse-final-cross {
+    font-size:28px;
+    margin-bottom:28px;
+    display:inline-block;
+    animation:float 5s ease infinite;
+    opacity:0.6;
+  }
+
+  .verse-final-text {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(20px,4vw,26px);
+    font-style:italic;
+    font-weight:400;
+    line-height:1.8;
+    color:var(--cream-dim);
+    margin-bottom:24px;
+    position:relative;
+  }
+  .verse-final-text::before { content:'\201C'; color:var(--gold); opacity:0.4; }
+  .verse-final-text::after { content:'\201D'; color:var(--gold); opacity:0.4; }
+
+  .verse-final-ref {
+    font-family:'Space Mono',monospace;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--olive);
+  }
+
+  .verse-final-line {
+    width:40px; height:1px;
+    background:var(--olive);
+    margin:20px auto 0;
+    opacity:0.3;
+  }
+
+  /* ══════════ VIDEO ══════════ */
+  .video-section {
+    position:relative;
+    padding:80px 24px 100px;
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .video-label {
+    font-family:'Space Mono',monospace;
+    font-size:11px; letter-spacing:5px;
+    text-transform:uppercase; color:var(--warm);
+    margin-bottom:28px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .video-label::before, .video-label::after {
+    content:''; flex:1; max-width:60px; height:1px;
+    background:linear-gradient(to right,transparent,var(--warm));
+  }
+  .video-label::after {
+    background:linear-gradient(to left,transparent,var(--warm));
+  }
+
+  .video-wrap {
+    position:relative;
+    width:100%;
+    max-width:340px;
+    aspect-ratio:9/16;
+    border-radius:16px;
+    overflow:hidden;
+    cursor:pointer;
+    text-decoration:none;
+    display:block;
+    box-shadow:
+      0 0 0 1px rgba(232,185,49,0.15),
+      0 0 60px rgba(255,107,53,0.12),
+      0 32px 80px rgba(0,0,0,0.6);
+    transition:box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .video-wrap:hover {
+    box-shadow:
+      0 0 0 1px rgba(232,185,49,0.4),
+      0 0 80px rgba(255,107,53,0.2),
+      0 40px 100px rgba(0,0,0,0.7);
+    transform:scale(1.01);
+  }
+
+  .video-wrap video {
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .video-overlay {
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    background:rgba(12,10,9,0.45);
+    backdrop-filter:blur(2px);
+    transition:opacity 0.4s ease;
+    cursor:pointer;
+  }
+  .video-overlay.hidden {
+    opacity:0;
+    pointer-events:none;
+  }
+  .video-play-btn {
+    display:flex;
+    align-items:center; justify-content:center;
+    width:80px; height:80px;
+    border-radius:50%;
+    border:1.5px solid rgba(250,243,232,0.25);
+    backdrop-filter:blur(8px);
+    background:rgba(12,10,9,0.4);
+    transition:all 0.3s;
+    animation:float 3s ease infinite;
+    flex-shrink:0;
+  }
+  .video-play-btn:hover {
+    border-color:var(--warm);
+    background:rgba(255,107,53,0.15);
+    transform:scale(1.08);
+  }
+  .video-play-btn .play-icon {
+    font-size:28px;
+    color:var(--cream);
+    line-height:1;
+    margin-left:4px;
+  }
+  .video-play-label {
+    font-family:'Space Mono',monospace;
+    font-size:9px; letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--cream-muted);
+  }
+
+  /* ══════════ FOOTER ══════════ */
+  .footer-marquee {
+    overflow:hidden; padding:14px 0;
+    background:var(--bg2);
+    border-top:1px solid rgba(250,243,232,0.04);
+  }
+  .footer-marquee-track {
+    display:inline-flex;
+    animation:marquee 30s linear infinite;
+  }
+  .footer-marquee-track span {
+    font-family:'Space Mono',monospace;
+    font-size:11px; letter-spacing:4px;
+    text-transform:uppercase;
+    color:var(--cream-muted); padding:0 40px; opacity:0.3;
+  }
+  .footer {
+    text-align:center; padding:48px 24px;
+    position:relative; z-index:1;
+  }
+  .footer-heart {
+    font-size:24px; display:inline-block;
+    animation:float 4s ease infinite;
+    margin-bottom:12px;
+  }
+  .footer p {
+    font-family:'Space Mono',monospace;
+    font-size:11px; letter-spacing:2px;
+    color:var(--cream-muted); opacity:0.4;
+  }
+
+  /* ══════════ RESPONSIVE ══════════ */
+  @media (max-width:480px) {
+    .carousel-hero { height:85vh; min-height:480px; }
+    .hero-name { letter-spacing:-1px; }
+    .message-section { padding:80px 20px 60px; }
+    .msg-text { font-size:16px; }
+    .resilience-content { padding-left:24px; }
+    .resilience-text { font-size:15px; }
+    .scroll-cue { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- ═══ MARQUEE ═══ -->
+<div class="marquee-banner">
+  <div class="marquee-track">
+    <span>Feliz Aniversário <em>✦</em> Stefany <em>✦</em> Parabéns <em>✦</em> Feliz Aniversário <em>✦</em> Stefany <em>✦</em> Parabéns <em>✦</em> Feliz Aniversário <em>✦</em> Stefany <em>✦</em> Parabéns <em>✦</em></span>
+    <span>Feliz Aniversário <em>✦</em> Stefany <em>✦</em> Parabéns <em>✦</em> Feliz Aniversário <em>✦</em> Stefany <em>✦</em> Parabéns <em>✦</em> Feliz Aniversário <em>✦</em> Stefany <em>✦</em> Parabéns <em>✦</em></span>
+  </div>
+</div>
+
+<!-- ═══ CAROUSEL HERO ═══ -->
+<section class="carousel-hero">
+  <div class="carousel-track" id="c-track">
+
+    <!--
+      SUAS FOTOS:
+      1. Pasta "fotos" no repositório
+      2. Troque src="fotos/foto1.jpg"
+      3. Edite a legenda
+      4. Copie/apague blocos pra add/remover
+    -->
+
+    <div class="carousel-slide active">
+      <img src="fotos/foto1.jpg" alt="Foto 1">
+      <div class="caption"><span class="caption-text">Acima de mim só Deus</span></div>
+    </div>
+    <div class="carousel-slide">
+      <img src="fotos/foto2.jpg" alt="Foto 2">
+      <div class="caption"><span class="caption-text">Tey tey tey</span></div>
+    </div>
+    <div class="carousel-slide">
+      <img src="fotos/foto3.jpg" alt="Foto 3">
+      <div class="caption"><span class="caption-text">Vai acordar careca</span></div>
+    </div>
+    <div class="carousel-slide">
+      <img src="fotos/foto4.jpg" alt="Foto 4">
+      <div class="caption"><span class="caption-text">Amo você</span></div>
+    </div>
+  </div>
+
+  <div class="carousel-overlay">
+    <div class="hero-tag">✦ Parabéns ✦</div>
+    <h1 class="hero-name">Stefany</h1>
+    <div class="hero-line"></div>
+    <div class="hero-year">Mais um ano incrível começa hoje</div>
+  </div>
+
+  <div class="carousel-nav" id="c-nav">
+    <button id="c-prev" aria-label="Anterior">‹</button>
+    <span class="carousel-counter" id="c-counter">01 / 04</span>
+    <button id="c-next" aria-label="Próxima">›</button>
+  </div>
+
+  <div class="scroll-cue">
+    <span>scroll</span>
+    <div class="scroll-cue-line"></div>
+  </div>
+</section>
+
+<section class="resilience-section">
+  <div class="resilience-bg"></div>
+  <div class="resilience-inner reveal">
+    <div class="resilience-line-vert"></div>
+    <div class="resilience-content">
+      <h2 class="resilience-title">
+        Se prepara para melhor mensagem <span class="warm">de aniversário.</span><br>
+       <span class="gold">Te amo e tmj.</span>
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ MENSAGEM ═══ -->
+<section class="message-section">
+  <div class="message-inner reveal">
+    <div class="msg-deco">"</div>
+    <div class="msg-label">Pra você</div>
+    <div class="msg-text">
+
+      <p>Como sempre deixei a melhor mensagem pra enviar no final né, a minha.</p>
+
+      <p>Espero que você tenha aproveitado muito hoje, porque <span class="hl">você merece demais</span>.
+        Quero começar desejando tudo de melhor para você, que você <span class="hl">conquiste os seus sonhos e projetos</span>,
+        eu sempre vou estar torcendo muito para que tudo dê certo.
+        Você pode <span class="hl">contar comigo sempre</span> e para qualquer coisa, sei que a gente não tem se falado
+        mais como antes, mas a consideração continua a mesma e mesmo eu estando mais ocupado
+        do que eu gostaria, saiba que pode contar comigo.</p>
+
+      <p>Eu <span class="hl">acredito muito em você</span> e sei que você vai alcançar coisas incríveis,
+        e não digo isso só porque é o seu aniversário, mas porque eu acredito mesmo.
+        Espero que dê tudo certo com os seus planos de começar a faculdade e que você
+        consiga um emprego muito legal.
+        Mas também que <span class="hl">você não desista do sonho de virar modelo</span>. Deus pode fazer coisas que às vezes parecem muito difíceis ou até mesmo impossíveis para nós.</p>
+
+      <p>Obrigado por tudo, pelas conversas, pelo papo depois do culto, você sempre me pergunta sobre a
+        minha vida mesmo eu não tendo lá muita coisa para contar,
+        obrigado por querer fazer parte e estar aqui disponível.</p>
+
+      <p>A gente já passou por tanta coisa né, e eu te acho <span class="hl">muito forte por continuar firme</span>,
+        mesmo com a vida não sendo tão boa assim. Sei que Deus tem cuidado de tudo e sei que mesmo que às vezes a gente não entenda o 
+        porquê de tudo, Deus está cuidando, assim como está escrito:
+        <span class="msg-verse">"Todas as coisas continuamente cooperam para o bem daquelas que amam a Deus"</span>
+        Então eu sei que mesmo quando as coisas não estão saindo do jeito que a gente quer, <span class="hl">Deus tem um plano lá no final</span>.</p>
+
+      <p>Eu te amo muito cara, gosto do seu jeito, você tem uma <span class="hl">facilidade para falar com as pessoas</span>
+        que eu queria ter kkkkkkk <span class="hl">Um carisma só seu</span>, espero que mesmo quando você estiver rica, casada
+        ou com filhos nós ainda possamos continuar com a mesma amizade.</p>
+
+      <p class="msg-funny">Não que eu vá te convidar para almoçar na minha casa (quando eu tiver uma kkkkk)
+        Mas espero que a gente nunca perca a proximidade.</p>
+
+      <p>Você poderia me chamar pra comer naquele japa lá,
+        como o aniversário é seu, <span class="hl">você que paga blz?</span></p>
+
+
+      <p class="msg-finale">E não esquece ein: <span class="hl-gold">Acima de você só Deus</span> 
+
+    </div>
+    <div class="msg-sign">com carinho <span class="heart">♥</span></div>
+  </div>
+</section>
+
+<!-- ═══ VÍDEO ═══ -->
+<section class="video-section">
+  <div class="video-label">um momento especial</div>
+  <a class="video-wrap video-shorts-link" id="video-wrap"
+     href="https://youtube.com/shorts/fMBz8q4c9wE"
+     target="_blank" rel="noopener" aria-label="Assistir no YouTube">
+    <img
+      src="https://i.ytimg.com/vi/fMBz8q4c9wE/hqdefault.jpg"
+      alt="Vídeo especial"
+      style="width:100%;height:100%;object-fit:cover;display:block;">
+    <div class="video-overlay" id="video-overlay">
+      <div class="video-play-btn">
+        <span class="play-icon">▶</span>
+      </div>
+      <span class="video-play-label">ver no YouTube</span>
+    </div>
+  </a>
+</section>
+
+<!-- ═══ VERSÍCULO FINAL ═══ -->
+<section class="verse-final">
+  <div class="verse-final-inner reveal">
+    <p class="verse-final-text">Porque eu bem sei os planos que tenho para vocês, diz o Senhor, planos de fazê-los prosperar e não de causar dano, planos de dar a vocês esperança e um futuro.</p>
+    <span class="verse-final-ref">Jeremias 29:11</span>
+    <div class="verse-final-line"></div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="footer-marquee">
+  <div class="footer-marquee-track">
+    <span>Feliz aniversário Stefany ✦ com carinho ✦ Feliz aniversário Stefany ✦ com carinho ✦ Feliz aniversário Stefany ✦ com carinho ✦</span>
+    <span>Feliz aniversário Stefany ✦ com carinho ✦ Feliz aniversário Stefany ✦ com carinho ✦ Feliz aniversário Stefany ✦ com carinho ✦</span>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-heart">🧡</div>
+  <p>De Luis</p>
+</footer>
+
+<script>
+// ══════════ PARTICLES ══════════
+(function(){
+  const c=document.getElementById('particles');
+  const ctx=c.getContext('2d');
+  let dots=[];
+  const N=50;
+  function resize(){c.width=innerWidth;c.height=innerHeight;}
+  resize();addEventListener('resize',resize);
+  for(let i=0;i<N;i++){
+    dots.push({
+      x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+      r:1+Math.random()*1.5,
+      vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,
+      o:0.1+Math.random()*0.2
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    dots.forEach(d=>{
+      d.x+=d.vx;d.y+=d.vy;
+      if(d.x<0)d.x=c.width;if(d.x>c.width)d.x=0;
+      if(d.y<0)d.y=c.height;if(d.y>c.height)d.y=0;
+      ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,107,53,${d.o})`;ctx.fill();
+    });
+    for(let i=0;i<dots.length;i++){
+      for(let j=i+1;j<dots.length;j++){
+        const dx=dots[i].x-dots[j].x,dy=dots[i].y-dots[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){
+          ctx.beginPath();ctx.moveTo(dots[i].x,dots[i].y);
+          ctx.lineTo(dots[j].x,dots[j].y);
+          ctx.strokeStyle=`rgba(255,107,53,${0.05*(1-dist/120)})`;
+          ctx.lineWidth=0.5;ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ══════════ CONFETTI ══════════
+(function(){
+  const c=document.createElement('canvas');
+  c.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+  document.body.appendChild(c);
+  const ctx=c.getContext('2d');
+  let parts=[],running=false;
+  function resize(){c.width=innerWidth;c.height=innerHeight;}
+  resize();addEventListener('resize',resize);
+  const colors=['#FF6B35','#E8B931','#FF8F5E','#FAF3E8','#8A9A5B','#fff'];
+  function burst(n){
+    for(let i=0;i<n;i++){
+      parts.push({
+        x:Math.random()*c.width,y:-10-Math.random()*c.height*0.4,
+        w:3+Math.random()*7,h:5+Math.random()*12,
+        color:colors[~~(Math.random()*colors.length)],
+        vy:1.5+Math.random()*3.5,vx:(Math.random()-0.5)*2.5,
+        rot:Math.random()*360,rs:(Math.random()-0.5)*10,
+        o:1,d:0.001+Math.random()*0.004
+      });
+    }
+    if(!running){running=true;loop();}
+  }
+  function loop(){
+    ctx.clearRect(0,0,c.width,c.height);
+    for(let i=parts.length-1;i>=0;i--){
+      const p=parts[i];
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.rs;p.o-=p.d;
+      if(p.o<=0||p.y>c.height+20){parts.splice(i,1);continue;}
+      ctx.save();ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.globalAlpha=p.o;ctx.fillStyle=p.color;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+    }
+    if(parts.length>0)requestAnimationFrame(loop);
+    else running=false;
+  }
+  setTimeout(()=>burst(150),600);
+  setTimeout(()=>burst(80),3000);
+})();
+
+// ══════════ CAROUSEL ══════════
+(function(){
+  const track=document.getElementById('c-track');
+  const slides=track.querySelectorAll('.carousel-slide');
+  const counter=document.getElementById('c-counter');
+  const total=slides.length;
+  let cur=0;
+  function goTo(i){
+    cur=((i%total)+total)%total;
+    track.style.transform=`translateX(-${cur*100}%)`;
+    slides.forEach((s,j)=>s.classList.toggle('active',j===cur));
+    counter.textContent=String(cur+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+  }
+  document.getElementById('c-prev').addEventListener('click',()=>goTo(cur-1));
+  document.getElementById('c-next').addEventListener('click',()=>goTo(cur+1));
+  let sx=0,drag=false;
+  track.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;drag=true},{passive:true});
+  track.addEventListener('touchend',e=>{
+    if(!drag)return;drag=false;
+    const d=e.changedTouches[0].clientX-sx;
+    if(Math.abs(d)>50)goTo(cur+(d>0?-1:1));
+  },{passive:true});
+  let ap=setInterval(()=>goTo(cur+1),5000);
+  const hero=track.closest('.carousel-hero');
+  hero.addEventListener('mouseenter',()=>clearInterval(ap));
+  hero.addEventListener('mouseleave',()=>{ap=setInterval(()=>goTo(cur+1),5000);});
+})();
+
+// ══════════ SCROLL REVEAL ══════════
+(function(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'),i*80);
+    });
+  },{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+})();
+</script>
+
+</body>
+</html>
